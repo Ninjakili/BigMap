@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>BigMap</title>
+    <link rel="stylesheet" href="node_modules/ol/ol.css">
+    <link rel="stylesheet" href="map.css">
+</head>
+
+<style>
+    .track {
+        stroke-width: 1;
+        stroke: lightgrey;
+        fill: none;
+        
+    }
+    
+    .progress {
+        stroke-width: 10;
+        stroke: rgb(255, 255, 255);
+        stroke-linecap: round;
+        fill: none;
+        transform: rotate(180deg);
+        transform-origin: center;
+        transition: all 1.5s ease;
+        stroke-dasharray: 0;
+        /* filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4)); */
+        filter: drop-shadow(0 0 5px rgb(255, 255, 255)); 
+    }
+
+    .progress-bar {
+        padding: 5px;
+    }
+
+    .analytics {
+        text-align: center;
+
+    }
+</style>
+
+<body>
+    <div id="shellbar" class="shellbar">
+        <img class="logo" src="./images/logo.png" width="50px" height="50px" />
+        <button onclick="toggleAnalytics()" id="anal" class="anal-butt">Analytics</button>
+        <button onclick="clearVisits()" class="anal-butt">Clear Visits</button>
+        <button onclick="visitAll()" class="anal-butt">Visit all</button>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search..." />
+            <button id="search-button"><img src="images/search.png"></button>
+        </div>
+    </div>
+    <script>
+        let closed = true;
+        let user = "default";
+        let count = 0;
+        let total = 0;
+
+
+        window.onload = async () => {
+            let assignPromise = fetch("http://localhost:8000/assign", {headers: {'Content-Type': 'application/json'}, mode:"cors"}).then((response) => response.text());
+            if(JSON.parse(await assignPromise).url != null) window.open(JSON.parse(await assignPromise).url, "_self");
+            else {
+                user = JSON.parse(await assignPromise).name;
+                let div = document.createElement("div");
+                div.classList.add("user");
+                let text = document.createTextNode(user);
+                div.appendChild(text);
+                document.getElementById("shellbar").insertBefore(div, document.getElementById("anal"));
+                drawNodesAndPolys();
+                refreshCount();
+            }
+        }
+
+        async function refreshCount() {
+            let countPromise = fetch("http://localhost:8000/getCount", {headers: {'Content-Type': 'application/json'}, mode:"cors", method:"POST", body:JSON.stringify({"id": user})}).then((response) => response.text());
+            count = JSON.parse(await countPromise).count;
+            total = JSON.parse(await countPromise).total;
+            try {
+                document.getElementById("countText").remove();
+            } catch(e) {}
+            let div = document.createElement("div");
+            let text = document.createTextNode(""+count + " of " + total);
+            div.appendChild(text);
+            div.id = "countText"
+            document.getElementById("sideBar").insertBefore(div, document.getElementById("count"));
+            onChange(closed);
+            console.log(count)
+            console.log(total)
+        }
+
+        async function clearVisits() {
+            await fetch("http://127.0.0.1:8000/clearVisits", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
+            refreshCount();
+            drawNodesAndPolys();
+        }
+
+        async function visitAll() {
+            await fetch("http://127.0.0.1:8000/visitAll", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
+            refreshCount();
+            drawNodesAndPolys();
+        }
+       
+        function toggleAnalytics() {
+            closed = !closed;
+            onChange(closed);
+            document.getElementById("sideBar").classList.toggle("opened");
+            
+        }
+
+        async function giveReview(nodeID) {
+            rating = document.getElementById("rating").value;
+            review = document.getElementById("review").value;
+            if(rating == "") return;
+            else {
+                await fetch("http://127.0.0.1:8000/giveReview", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'userID': user, 'nodeID': ""+nodeID, 'rating': rating, 'review': review})});
+                overlay.setPosition(undefined);
+                popupCloser.blur();
+                drawNodesAndPolys();
+            }
+        }
+
+        async function toggleVisited(id) {
+        await fetch("http://127.0.0.1:8000/toggleVisited", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'id': ''+id, 'uID': user})}).then((response) => response.text())
+        refreshCount();
+        drawNodesAndPolys();
+    }
+
+
+    
+    </script>
+
+
+    <div id="sideBar" class="analytics">
+        <h1>Progress</h1>
+        <div class="progress-bar">
+            <svg width="250" height="120">
+        
+          <!-- <rect height="100%" width="100%" fill="none" stroke="white" stroke-width="3"></rect> -->
+                <circle r="100" cx="125" cy="115" class="track"></circle>
+                <circle r="100" cx="125" cy="5" class="progress"></circle>
+            </svg>
+        </div>
+        <div id="count"></div>
+    </div>
+
+
+    <div id="map-container">
+        <div id="map" class="map"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/3.20.1/ol.js"></script>
+    <script src="./code/map.js"></script>
+</body>
+
+<script>
+
+let progressCircle = document.querySelector(".progress");
+    let radius = progressCircle.r.baseVal.value;
+    
+    let circumference = radius * 2 * Math.PI;
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = circumference * 2;
+    // onChange();
+    
+
+    function setProgress(percent) {
+        // Betrag von percent
+        percent = percent < 0 ? -percent : percent;
+        
+        // Overflow abfangen
+        if(percent >= 100) {
+            percent = 100 - percent % 100;
+        }
+        
+        
+        progressCircle.style.strokeDashoffset = circumference - (percent / 200) * circumference;
+    }
+
+    function onChange(closed) {
+        //0 to 100
+        // Value we need to get how many mc's percentage we have visited;
+        if(closed) {
+            progressCircle.style.strokeDashoffset = circumference * 2; 
+            return;
+        }
+        let amount_visited = count;
+        let tot_amount = total;
+        let value = (amount_visited / tot_amount) * 100;
+        //alert(inVal);
+        // should be called everytime we click on the opening button
+        setProgress(value);
+    }
+</script>
+
+</html>

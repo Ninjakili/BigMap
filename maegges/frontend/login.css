@@ -1,0 +1,110 @@
+body {
+    margin: 0px;
+}
+
+.test {
+    position: fixed;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+}
+
+.logo {
+    position: fixed;
+    width: 20vw;
+    height:20vw;
+    bottom: 53%;
+    left: 40%;
+}
+
+.login {
+    position: fixed;
+    top: 70%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    width: 10%;
+    height: 3vw;
+    left: 56.5%;
+    border-radius: 2.5vh;
+    font-size: 2vw;
+}
+
+.createAccount {
+    position: fixed;
+    top: 70%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    width: 20%;
+    height: 3vw;
+    left: 32.5%;
+    border-radius: 2.5vh;
+    font-size: 2vw;
+}
+
+.input1 {
+    position:fixed;
+    top:50%;
+    left: 45%;
+    margin:0px;
+    width: 20.25%;
+    font-size: 2vw;
+    border-radius: 3.5vh;
+    padding: 1vh;
+    height: 2vw;
+}
+
+.input2 {
+    position:fixed;
+    top:60%;
+    left: 45%;
+    margin:0px;
+    width: 20.25%;
+    font-size: 2vw;
+    border-radius: 3.5vh;
+    padding: 1vh;
+    height: 2vw
+}
+
+.nameLabel {
+    position: fixed;
+    top:50.5%;
+    margin:auto;
+    left: 32.5%;
+    font-size: 2.5vw;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.passwordLabel {
+    position: fixed;
+    top:60.5%;
+    margin:auto;
+    left: 32.5%;
+    font-size: 2.5vw;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.error {
+    position: fixed;
+    top: 80%;
+    left: 32.5%;
+    padding: 2vh;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(255, 0, 0, 0.2);
+    border-radius: 2vh;
+    border-style: solid;
+    border-color: red;
+}
+
+.success {
+    position: fixed;
+    top: 80%;
+    left: 32.5%;
+    padding: 2vh;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(0, 255, 0, 0.2);
+    border-radius: 2vh;
+    border-style: solid;
+    border-color: green;
+}

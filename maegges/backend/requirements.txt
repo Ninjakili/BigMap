@@ -1,0 +1,4 @@
+pandas
+fastAPI
+pydantic
+uvicorn

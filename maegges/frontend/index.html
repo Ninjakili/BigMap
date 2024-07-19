@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>BigMap</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <script>
+        window.onload = async () => {
+            document.getElementById("name").addEventListener("keyup", function (event) {
+                if (event.key === "Enter") {
+                    document.getElementById("login").click();
+                }
+            });
+            document.getElementById("password").addEventListener("keyup", function (event) {
+                if (event.key === "Enter") {
+                    document.getElementById("login").click();
+                }
+            });
+        }
+
+
+        async function login() {
+            let username = document.getElementById("name").value;
+            let password = document.getElementById("password").value;
+            const response = JSON.parse(await fetch("http://localhost:8000/login", { headers: { 'Content-Type': 'application/json' }, method: "POST", mode: "cors", body: JSON.stringify({ "name": username, "password": password }) }).then((response) => response.text()));
+            console.log(response)
+            if (response.message.startsWith("http://")) {
+                window.open(response.message, "_self");
+            } else {
+                try {
+                    document.getElementById("error").remove();
+                } catch (e) { }
+                let div = document.createElement("div");
+                div.classList.add("error");
+                div.id = "error";
+                let text = document.createTextNode(response.message);
+                div.appendChild(text);
+
+                document.body.insertBefore(div, document.getElementById("login"));
+            }
+        }
+
+        async function createAccount() {
+            let username = document.getElementById("name").value;
+            let password = document.getElementById("password").value;
+            document.getElementById("name").value = "";
+            document.getElementById("password").value = "";
+            const response = JSON.parse(await fetch("http://localhost:8000/createAccount", { headers: { 'Content-Type': 'application/json' }, method: "POST", mode: "cors", body: JSON.stringify({ "name": username, "password": password }) }).then((response) => response.text()));
+            console.log(response)
+            if (response.status == 'success') {
+                try {
+                    document.getElementById("error").remove();
+                } catch (e) { }
+                try {
+                    document.getElementById("success").remove();
+                } catch (e) { }
+                let div = document.createElement("div");
+                div.classList.add("success");
+                div.id = "success";
+                let text = document.createTextNode(response.message);
+                div.appendChild(text);
+
+                document.body.insertBefore(div, document.getElementById("login"));
+            } else {
+                try {
+                    document.getElementById("error").remove();
+                } catch (e) { }
+                try {
+                    document.getElementById("success").remove();
+                } catch (e) { }
+                let div = document.createElement("div");
+                div.classList.add("error");
+                div.id = "error";
+                let text = document.createTextNode(response.message);
+                div.appendChild(text);
+
+                document.body.insertBefore(div, document.getElementById("login"));
+            }
+        }
+    </script>
+    <img class="logo" src="./images/logo.png" />
+    <h1 class="nameLabel">Name</h1>
+    <input class="input1" id="name" />
+    <h1 class="passwordLabel">Password</h1>
+    <input class="input2" type="password" id="password" />
+    <button id="login" class="login" onclick="login()">Login</button>
+    <button id="createAccount" class="createAccount" onclick="createAccount()">Create Account</button>
+    </div>
+</body>
+
+</html>
