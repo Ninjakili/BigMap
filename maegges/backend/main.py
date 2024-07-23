@@ -98,7 +98,7 @@ async def search_png():
 async def assign():
     print(app.lastLogin)
     if(app.lastLogin == ""):
-        return JSONResponse(content={"url": "http://localhost:8000/"})
+        return JSONResponse(content={"url": "/"})
     tmp = app.lastLogin
     app.lastLogin = ""
     return JSONResponse(content={"name": tmp})
@@ -110,7 +110,7 @@ async def login(cred: Credentials):
         return JSONResponse(content={'message': 'Invalid credentials, please try again'})
     else:
         app.lastLogin=cred.name
-        return JSONResponse(content={'message': 'http://localhost:8000/map.html'})
+        return JSONResponse(content={'message': '/map.html'})
 
 @app.post("/createAccount")
 async def register(cred: Credentials):
