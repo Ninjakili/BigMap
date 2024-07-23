@@ -27,7 +27,7 @@
             let password = document.getElementById("password").value;
             const response = JSON.parse(await fetch("/login", { headers: { 'Content-Type': 'application/json' }, method: "POST", mode: "cors", body: JSON.stringify({ "name": username, "password": password }) }).then((response) => response.text()));
             console.log(response)
-            if (response.message.startsWith("http://")) {
+            if (response.message.startsWith("/")) {
                 window.open(response.message, "_self");
             } else {
                 try {
