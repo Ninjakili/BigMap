@@ -58,7 +58,7 @@
 
 
         window.onload = async () => {
-            let assignPromise = fetch("http://localhost:8000/assign", {headers: {'Content-Type': 'application/json'}, mode:"cors"}).then((response) => response.text());
+            let assignPromise = fetch("/assign", {headers: {'Content-Type': 'application/json'}, mode:"cors"}).then((response) => response.text());
             if(JSON.parse(await assignPromise).url != null) window.open(JSON.parse(await assignPromise).url, "_self");
             else {
                 user = JSON.parse(await assignPromise).name;
@@ -73,7 +73,7 @@
         }
 
         async function refreshCount() {
-            let countPromise = fetch("http://localhost:8000/getCount", {headers: {'Content-Type': 'application/json'}, mode:"cors", method:"POST", body:JSON.stringify({"id": user})}).then((response) => response.text());
+            let countPromise = fetch("/getCount", {headers: {'Content-Type': 'application/json'}, mode:"cors", method:"POST", body:JSON.stringify({"id": user})}).then((response) => response.text());
             count = JSON.parse(await countPromise).count;
             total = JSON.parse(await countPromise).total;
             try {
@@ -90,13 +90,13 @@
         }
 
         async function clearVisits() {
-            await fetch("http://127.0.0.1:8000/clearVisits", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
+            await fetch("/clearVisits", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
             refreshCount();
             drawNodesAndPolys();
         }
 
         async function visitAll() {
-            await fetch("http://127.0.0.1:8000/visitAll", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
+            await fetch("/visitAll", {headers: {'Content-Type': 'application/json'}, method: "POST", mode:"cors", body:JSON.stringify({"id": user})})
             refreshCount();
             drawNodesAndPolys();
         }
@@ -113,7 +113,7 @@
             review = document.getElementById("review").value;
             if(rating == "") return;
             else {
-                await fetch("http://127.0.0.1:8000/giveReview", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'userID': user, 'nodeID': ""+nodeID, 'rating': rating, 'review': review})});
+                await fetch("/giveReview", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'userID': user, 'nodeID': ""+nodeID, 'rating': rating, 'review': review})});
                 overlay.setPosition(undefined);
                 popupCloser.blur();
                 drawNodesAndPolys();
@@ -121,7 +121,7 @@
         }
 
         async function toggleVisited(id) {
-        await fetch("http://127.0.0.1:8000/toggleVisited", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'id': ''+id, 'uID': user})}).then((response) => response.text())
+        await fetch("/toggleVisited", {headers: {'Content-Type': 'application/json'}, method: "POST", mode: "cors", body: JSON.stringify({'id': ''+id, 'uID': user})}).then((response) => response.text())
         refreshCount();
         drawNodesAndPolys();
     }
