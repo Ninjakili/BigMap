@@ -44,6 +44,9 @@ app.lastLogin = ""
 
 origins = [
     "http://localhost:8000",
+    "http://3.75.158.163",
+    "http://3.125.183.140",
+    "http://35.157.117.28", 
 ]
 
 
