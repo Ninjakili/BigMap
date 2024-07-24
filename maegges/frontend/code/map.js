@@ -123,13 +123,13 @@ async function drawNodesAndPolys() {
         else
           popupContentHTML += `<br>Rating (1-5): `
         if (rating)
-          popupContentHTML += `<input id="rating" placeholder="${rating}" class="rating"></input><br>`;
+          popupContentHTML += `<input placeholder="${rating}" class="rating" id="rating"></input><br>`;
         else
-          popupContentHTML += `<input id="rating" class="rating"></input><br>`;
+          popupContentHTML += `<input class="rating" id="rating"></input><br>`;
         if (review)
-          popupContentHTML += `<br>Review: <textarea id="review" placeholder="${review}" class="review"></textarea><hr>`;
+          popupContentHTML += `<br>Review: <textarea placeholder="${review}" class="review" id="review"></textarea><hr>`;
         else
-          popupContentHTML += `<br>Review: <textarea id="review" class="review"></textarea><hr>`;
+          popupContentHTML += `<br>Review: <textarea class="review" id="review"></textarea><hr>`;
         popupContentHTML += `<button class="popupButtonLeft" onClick="toggleVisited(${feature
           .get("name")
           .substr(5)})">Toggle Visit</button>`;
