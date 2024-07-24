@@ -160,9 +160,9 @@ async def getNodes(user: User):
 @app.post("/giveReview")
 async def giveReview(rev: Review):
     if(rev.review):
-        cur.execute('INSERT INTO reviews VALUES ("' + rev.userID + '", "' + rev.nodeID + '", ' + str(rev.rating) + ', "' + rev.review + '") on conflict do UPDATE SET rating=' + str(rev.rating) + ', review="' + rev.review + '" WHERE userID="' + rev.userID + '" AND nodeID="' + rev.nodeID + '"');
+        cur.execute('INSERT INTO reviews VALUES ("' + rev.userID + '", "' + rev.nodeID + '", ' + str(rev.rating) + ', "' + rev.review + '") ON CONFLICT(userID, nodeID) DO UPDATE SET rating=' + str(rev.rating) + ', review="' + rev.review + '" WHERE userID="' + rev.userID + '" AND nodeID="' + rev.nodeID + '"');
     else:
-         cur.execute('INSERT INTO reviews VALUES ("' + rev.userID + '", "' + rev.nodeID + '", ' + str(rev.rating) + ', "' + rev.review + '") on conflict do UPDATE SET rating=' + str(rev.rating) + ' WHERE userID="' + rev.userID + '" AND nodeID="' + rev.nodeID + '"');
+         cur.execute('INSERT INTO reviews VALUES ("' + rev.userID + '", "' + rev.nodeID + '", ' + str(rev.rating) + ', "' + rev.review + '") ON CONFLICT(userID, nodeID) DO UPDATE SET rating=' + str(rev.rating) + ' WHERE userID="' + rev.userID + '" AND nodeID="' + rev.nodeID + '"');
     return JSONResponse(content={"message": "updated review of " + rev.userID + " on " + rev.nodeID + " to " + str(rev.rating)});
 
 @app.post("/getPolys")
